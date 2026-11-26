@@ -1,0 +1,19 @@
+import "server-only";
+import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+
+// AES-256-GCM for Plaid access tokens. Stored as base64(iv | tag | ciphertext).
+const key = () => Buffer.from(process.env.PLAID_TOKEN_KEY!, "base64");
+
+export function encrypt(plain: string) {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv("aes-256-gcm", key(), iv);
+  const body = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
+  return Buffer.concat([iv, cipher.getAuthTag(), body]).toString("base64");
+}
+
+export function decrypt(enc: string) {
+  const raw = Buffer.from(enc, "base64");
+  const decipher = createDecipheriv("aes-256-gcm", key(), raw.subarray(0, 12));
+  decipher.setAuthTag(raw.subarray(12, 28));
+  return Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]).toString("utf8");
+}
