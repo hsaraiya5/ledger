@@ -38,3 +38,7 @@ Your data lives in your own Supabase database and nowhere else. Only the email y
 Ask your agent for changes. [AGENTS.md](AGENTS.md) explains how the code fits together and what to keep working. Small personal settings live in `ledger.config.ts`.
 
 Built with Next.js, Supabase, Plaid and Vercel.
+
+## License
+
+MIT: copy it, change it, make it yours. See [LICENSE](LICENSE).
